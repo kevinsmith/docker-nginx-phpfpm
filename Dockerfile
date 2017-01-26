@@ -28,4 +28,26 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 
 EXPOSE 80 443
 
-CMD ["nginx", "-g", "daemon off;"]
+# Install j2cli for nginx config file templates
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python-dev \
+    python-setuptools \
+
+    && easy_install j2cli \
+
+    # Cleanup
+    && apt-get purge -y \
+        python-dev \
+        python-setuptools \
+    && rm -rf /var/lib/apt/lists/*
+
+# Custom nginx config
+COPY nginx /etc/nginx/imported
+RUN cp /etc/nginx/imported/nginx.conf /etc/nginx/nginx.conf
+
+# Copy entrypoint script
+COPY entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+
+
+ENTRYPOINT ["/entrypoint.sh"]

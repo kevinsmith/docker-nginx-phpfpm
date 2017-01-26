@@ -1,0 +1,64 @@
+include /etc/nginx/imported/before/*;
+
+server {
+    server_name _;
+
+    {% if NGINX_ENABLE_SSL|default('False') == 'True' %}
+      listen {{ NGINX_HTTPS_PORT|default('443') }} ssl;
+
+      ssl_session_cache  builtin:1000  shared:SSL:10m;
+      ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
+      ssl_ciphers HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;
+      ssl_prefer_server_ciphers on;
+
+      ssl_certificate {{ NGINX_SSL_CERT|default('/etc/nginx/imported/certs/self-signed.crt') }};
+      ssl_certificate_key {{ NGINX_SSL_CERT_KEY|default('/etc/nginx/imported/certs/self-signed.key') }};
+    {% else %}
+      listen {{ NGINX_HTTP_PORT|default('80') }};
+    {% endif %}
+
+    port_in_redirect {{ NGINX_PORT_IN_REDIRECT|default('on') }};
+
+    root /var/www/html;
+
+    index index.php index.html index.htm;
+
+    charset utf-8;
+
+    {% if NGINX_NOINDEX|default('True') == 'True' %}
+      add_header  X-Robots-Tag "noindex, nofollow, nosnippet, noarchive";
+    {% endif %}
+
+    include /etc/nginx/imported/server/*;
+
+    location / {
+        try_files $uri $uri/ /index.php?p=$uri&$args;
+
+        {% if NGINX_ENABLE_AUTH|default('True') == 'True' %}
+            satisfy any;
+            {% set auth_whitelist = NGINX_AUTH_WHITELIST|default('') %}
+            {% if auth_whitelist %}
+                {% for ip in auth_whitelist.split(',') %}
+                    allow {{ ip }};
+                {% endfor %}
+            {% endif %}
+            deny all;
+
+            auth_basic "Staging Server"; #For Basic Auth
+            auth_basic_user_file /etc/nginx/imported/.htpasswd; #For Basic Auth
+        {% endif %}
+
+        include /etc/nginx/imported/location/*;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt { access_log off; log_not_found off; }
+
+    error_page 404 /index.php;
+
+    location ~ /\.ht {
+        deny all;
+    }
+}
+
+include /etc/nginx/imported/after/*;
