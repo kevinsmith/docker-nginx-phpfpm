@@ -3,7 +3,7 @@ include /etc/nginx/imported/before/*;
 server {
     server_name _;
 
-    {% if NGINX_ENABLE_SSL|default('False') == 'True' %}
+    {% if NGINX_ENABLE_SSL|default('false') == 'true' %}
       listen {{ NGINX_HTTPS_PORT|default('443') }} ssl;
 
       ssl_session_cache  builtin:1000  shared:SSL:10m;
@@ -25,16 +25,32 @@ server {
 
     charset utf-8;
 
-    {% if NGINX_NOINDEX|default('True') == 'True' %}
+    {% if NGINX_NOINDEX|default('false') == 'true' %}
       add_header  X-Robots-Tag "noindex, nofollow, nosnippet, noarchive";
     {% endif %}
+
+    # Remove index.php from root URI
+    if ($request_uri ~* "^/index\.php$") {
+        return 301 /;
+    }
 
     include /etc/nginx/imported/server/*;
 
     location / {
-        try_files $uri $uri/ /index.php?p=$uri&$args;
+        # Remove index.php from URL
+        rewrite ^(/index\.php)(.*) $2 permanent;
 
-        {% if NGINX_ENABLE_AUTH|default('True') == 'True' %}
+        {% if NGINX_TRAILING_SLASH|default('') == 'ensure' %}
+            # Ensure trailing slashes
+            rewrite ^([^.]*[^/])$ $1/ permanent;
+        {% elif NGINX_TRAILING_SLASH|default('') == 'remove' %}
+            # Remove any trailing slashes
+            rewrite ^/(.*)/$ /$1 permanent;
+        {% endif %}
+
+        try_files $uri $uri/ /index.php?$query_string;
+
+        {% if NGINX_ENABLE_AUTH|default('true') == 'true' %}
             satisfy any;
             {% set auth_whitelist = NGINX_AUTH_WHITELIST|default('') %}
             {% if auth_whitelist %}
