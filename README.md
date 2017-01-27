@@ -1,6 +1,6 @@
 # nginx-phpfpm
 
-A Docker image for a reliable, configurable nginx + php-fpm web server.
+A Docker image for a reliable, highly-configurable nginx + php-fpm web server.
 
 ## License
 
