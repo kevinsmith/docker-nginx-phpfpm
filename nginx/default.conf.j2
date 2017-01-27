@@ -1,5 +1,19 @@
 include /etc/nginx/imported/before/*;
 
+{% if NGINX_ENABLE_SSL|default('false') == 'true' %}
+    server {
+        server_name _;
+        listen {{ NGINX_HTTP_PORT|default('80') }};
+        listen [::]:{{ NGINX_HTTP_PORT|default('80') }};
+
+        {% if NGINX_PORT_IN_REDIRECT|default('on') == 'on' %}
+            return 301 https://$host:{{ NGINX_HTTPS_PORT|default('443') }}$request_uri;
+        {% else %}
+            return 301 https://$host$request_uri;
+        {% endif %}
+    }
+{% endif %}
+
 server {
     server_name _;
 
