@@ -1,4 +1,4 @@
-include /etc/nginx/imported/before/*;
+include /etc/nginx/imported/partials/before/*;
 
 {% if NGINX_ENABLE_SSL|default('false') == 'true' %}
     server {
@@ -51,7 +51,7 @@ server {
         return 301 /;
     }
 
-    include /etc/nginx/imported/server/*;
+    include /etc/nginx/imported/partials/server/*;
 
     location / {
         # Remove index.php from URL
@@ -78,10 +78,10 @@ server {
             deny all;
 
             auth_basic "Staging Server"; #For Basic Auth
-            auth_basic_user_file /etc/nginx/imported/.htpasswd; #For Basic Auth
+            auth_basic_user_file /etc/nginx/imported/auth/.htpasswd; #For Basic Auth
         {% endif %}
 
-        include /etc/nginx/imported/location/*;
+        include /etc/nginx/imported/partials/location/*;
     }
 
     location = /favicon.ico { access_log off; log_not_found off; }
@@ -102,4 +102,4 @@ server {
     }
 }
 
-include /etc/nginx/imported/after/*;
+include /etc/nginx/imported/partials/after/*;
