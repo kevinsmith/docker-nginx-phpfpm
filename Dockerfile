@@ -2,6 +2,47 @@ FROM php:7.1-fpm
 MAINTAINER Kevin Smith <kevin@kevinsmith.io>
 
 #
+# Additional PHP extensions and configuration
+#
+
+# Install GD extension
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libmcrypt-dev \
+    libpng12-dev \
+
+    && docker-php-ext-configure gd --with-freetype-dir=/usr --with-png-dir=/usr --with-jpeg-dir=/usr \
+    && docker-php-ext-install -j$(nproc) gd \
+
+    # Install ImageMagick extension
+    && apt-get install -y --no-install-recommends \
+        libmagickwand-6.q16-dev \
+
+    && ln -s /usr/lib/x86_64-linux-gnu/ImageMagick-6.8.9/bin-Q16/MagickWand-config /usr/bin/ \
+    && pecl install imagick \
+    && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini \
+
+    # Install other Docker extensions
+    && docker-php-ext-install -j$(nproc) \
+        pdo_mysql \
+        mcrypt \
+        dom \
+
+    # Cleanup
+    && apt-get purge -y \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libmcrypt-dev \
+        libpng12-dev \
+        libmagickwand-6.q16-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Custom php-fpm config
+COPY php/php-fpm.conf /usr/local/etc/php-fpm.d/zzz-custom.conf
+
+
+#
 # Install and configure nginx
 #
 
