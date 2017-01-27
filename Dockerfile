@@ -26,6 +26,9 @@ RUN apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 573BFD6B3D8FBC64107
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
+RUN mkdir /etc/nginx/ssl/ \
+    && openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
+
 EXPOSE 80 443
 
 # Install j2cli for nginx config file templates
@@ -43,7 +46,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Custom nginx config
 COPY nginx /etc/nginx/imported
-RUN cp /etc/nginx/imported/nginx.conf /etc/nginx/nginx.conf
+RUN cp /etc/nginx/imported/nginx.conf /etc/nginx/nginx.conf \
+    && cp /etc/nginx/imported/certs/self-signed.crt /etc/nginx/ssl/self-signed.crt \
+    && cp /etc/nginx/imported/certs/self-signed.key /etc/nginx/ssl/self-signed.key
 
 # Copy entrypoint script
 COPY entrypoint.sh /
