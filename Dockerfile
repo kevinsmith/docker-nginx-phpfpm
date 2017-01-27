@@ -2,6 +2,23 @@ FROM php:7.1-fpm
 MAINTAINER Kevin Smith <kevin@kevinsmith.io>
 
 #
+# s6 overlay init and process supervisor
+#
+
+ENV S6_VERSION v1.19.1.1
+
+ADD https://github.com/just-containers/s6-overlay/releases/download/${S6_VERSION}/s6-overlay-amd64.tar.gz /tmp/s6-overlay-amd64.tar.gz
+ADD https://github.com/just-containers/s6-overlay/releases/download/${S6_VERSION}/s6-overlay-amd64.tar.gz.sig /tmp/s6-overlay-amd64.tar.gz.sig
+RUN \
+    # Verify GPG signature - "Just Containers <just-containers@jrjrtech.com>"
+    curl https://keybase.io/justcontainers/key.asc | gpg --import \
+    && gpg --verify /tmp/s6-overlay-amd64.tar.gz.sig /tmp/s6-overlay-amd64.tar.gz \
+
+    # Install
+    && tar xvfz /tmp/s6-overlay-amd64.tar.gz -C / && rm /tmp/s6-overlay-amd64.tar.gz
+
+
+#
 # Additional PHP extensions and configuration
 #
 
@@ -67,7 +84,7 @@ RUN apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 573BFD6B3D8FBC64107
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
-RUN mkdir /etc/nginx/ssl/ \
+RUN mkdir -p /etc/nginx/ssl/ \
     && openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
 
 EXPOSE 80 443
@@ -91,9 +108,7 @@ RUN cp /etc/nginx/imported/nginx.conf /etc/nginx/nginx.conf \
     && cp /etc/nginx/imported/certs/self-signed.crt /etc/nginx/ssl/self-signed.crt \
     && cp /etc/nginx/imported/certs/self-signed.key /etc/nginx/ssl/self-signed.key
 
-# Copy entrypoint script
-COPY entrypoint.sh /
-RUN chmod +x /entrypoint.sh
 
+ADD services.d /etc/services.d/
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/init"]
