@@ -2,6 +2,10 @@
 
 A Docker image for a reliable, highly-configurable nginx + php-fpm web server.
 
+## Hello world!
+
+The single "Hello world!" `index.php` in this image is used to show a given container is working properly, and it's borrowed and heavily modified from [Docker Cloud's hello-world](https://github.com/docker/dockercloud-hello-world).
+
 ## License
 
 Copyright 2017 Kevin Smith

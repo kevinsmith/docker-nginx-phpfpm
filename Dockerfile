@@ -108,6 +108,8 @@ RUN cp /etc/nginx/imported/nginx.conf /etc/nginx/nginx.conf \
     && cp /etc/nginx/imported/certs/self-signed.crt /etc/nginx/ssl/self-signed.crt \
     && cp /etc/nginx/imported/certs/self-signed.key /etc/nginx/ssl/self-signed.key
 
+ADD html /var/www/html
+
 
 ADD services.d /etc/services.d/
 
