@@ -89,6 +89,10 @@ server {
 
     error_page 404 /index.php;
 
+    {% if NGINX_ENABLE_ACCESS_LOG|default('false') == 'true' %}
+        access_log /var/log/nginx/access.log main;
+    {% endif %}
+
     location ~ \.php$ {
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
         include fastcgi_params;
