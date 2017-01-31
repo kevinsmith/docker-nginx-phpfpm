@@ -53,17 +53,21 @@ server {
 
     include /etc/nginx/imported/partials/server/*;
 
+    {% if NGINX_TRAILING_SLASH|default('') == 'ensure' %}
+        # Ensure trailing slashes
+        if ($request_method = GET) {
+            rewrite ^([^.]*[^/])$ $1/ permanent;
+        }
+    {% elif NGINX_TRAILING_SLASH|default('') == 'remove' %}
+        # Remove any trailing slashes
+        if ($request_method = GET) {
+            rewrite ^/(.*)/$ /$1 permanent;
+        }
+    {% endif %}
+
     location / {
         # Remove index.php from URL
         rewrite ^(/index\.php)(.*) $2 permanent;
-
-        {% if NGINX_TRAILING_SLASH|default('') == 'ensure' %}
-            # Ensure trailing slashes
-            rewrite ^([^.]*[^/])$ $1/ permanent;
-        {% elif NGINX_TRAILING_SLASH|default('') == 'remove' %}
-            # Remove any trailing slashes
-            rewrite ^/(.*)/$ /$1 permanent;
-        {% endif %}
 
         try_files $uri $uri/ /index.php?$query_string;
 
