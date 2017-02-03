@@ -65,11 +65,11 @@ server {
         }
     {% endif %}
 
-    location / {
+    location {{ NGINX_LOCATION|default('/') }} {
         # Remove index.php from URL
         rewrite ^(/index\.php)(.*) $2 permanent;
 
-        try_files $uri $uri/ /index.php?$query_string;
+        try_files $uri $uri/ {{ NGINX_LOCATION|default('/') }}index.php?$query_string;
 
         {% if NGINX_ENABLE_AUTH|default('true') == 'true' %}
             satisfy any;
