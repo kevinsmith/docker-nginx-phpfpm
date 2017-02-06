@@ -91,7 +91,7 @@ server {
     location = /favicon.ico { access_log off; log_not_found off; }
     location = /robots.txt { access_log off; log_not_found off; }
 
-    error_page 404 /index.php;
+    error_page 404 {{ NGINX_LOCATION|default('/') }}index.php;
 
     {% if NGINX_ENABLE_ACCESS_LOG|default('false') == 'true' %}
         access_log /var/log/nginx/access.log main;
