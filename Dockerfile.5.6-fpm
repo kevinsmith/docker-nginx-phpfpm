@@ -42,10 +42,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
     # Install other Docker extensions
     && docker-php-ext-install -j$(nproc) \
-        pdo_mysql \
         mysqli \
         mcrypt \
-        dom \
+        opcache \
+        pdo_mysql \
 
     # Cleanup
     && apt-get purge -y \
