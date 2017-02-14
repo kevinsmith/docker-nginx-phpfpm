@@ -42,10 +42,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
     # Install other Docker extensions
     && docker-php-ext-install -j$(nproc) \
-        pdo_mysql \
         mysqli \
         mcrypt \
-        dom \
+        opcache \
+        pdo_mysql \
 
     # Cleanup
     && apt-get purge -y \
@@ -64,7 +64,7 @@ COPY php/php-fpm.conf /usr/local/etc/php-fpm.d/zzz-custom.conf
 # Install and configure nginx
 #
 
-ENV NGINX_VERSION 1.11.9-1~jessie
+ENV NGINX_VERSION 1.11.10-1~jessie
 
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
     && echo "deb http://nginx.org/packages/mainline/debian/ jessie nginx" >> /etc/apt/sources.list \
