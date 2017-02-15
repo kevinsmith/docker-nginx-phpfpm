@@ -40,6 +40,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && pecl install imagick \
     && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini \
 
+    # Install Phpredis
+    && pecl install -o -f redis \
+    &&  rm -rf /tmp/pear \
+    &&  echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini \
+
     # Install other Docker extensions
     && docker-php-ext-install -j$(nproc) \
         mysqli \
