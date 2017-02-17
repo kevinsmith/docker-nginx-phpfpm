@@ -35,6 +35,7 @@ server {
     {% endif %}
 
     port_in_redirect {{ NGINX_PORT_IN_REDIRECT|default('on') }};
+    absolute_redirect {{ NGINX_ABSOLUTE_REDIRECT|default('on') }};
 
     root /var/www/html;
 
