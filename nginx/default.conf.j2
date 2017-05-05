@@ -158,7 +158,7 @@ server {
     error_page 404 {{ NGINX_LOCATION|default('/') }}index.php;
 
     {% if NGINX_ENABLE_ACCESS_LOG|default('false') == 'true' %}
-        access_log /var/log/nginx/access.log main;
+        access_log {{ NGINX_ACCESS_LOG_LOCATION|default('/var/log/nginx/access.log') }} main;
     {% endif %}
 
     location ~ \.php$ {
