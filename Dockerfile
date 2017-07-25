@@ -62,15 +62,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libmagickwand-6.q16-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Custom php-fpm config
+# Custom php config
 COPY php/php-fpm.conf /usr/local/etc/php-fpm.d/zzz-custom.conf
+COPY php/php.ini /usr/local/etc/php/
 
 
 #
 # Install and configure nginx
 #
 
-ENV NGINX_VERSION 1.13.0-1~jessie
+ENV NGINX_VERSION 1.13.3-1~jessie
 
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
     && echo "deb http://nginx.org/packages/mainline/debian/ jessie nginx" >> /etc/apt/sources.list \
