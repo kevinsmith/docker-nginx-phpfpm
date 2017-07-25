@@ -62,8 +62,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libmagickwand-6.q16-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Custom php-fpm config
+# Custom php config
 COPY php/php-fpm.conf /usr/local/etc/php-fpm.d/zzz-custom.conf
+COPY php/php.ini /usr/local/etc/php/
 
 
 #
