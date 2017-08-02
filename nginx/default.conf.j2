@@ -121,7 +121,7 @@ server {
 
     {% if NGINX_ENABLE_FASTCGI_CACHE|default('false') == 'true' %}
         set $no_cache 0;
-        set $ignore_headers Cache-Control Expires Set-Cookie;
+        set $hide_header Set-Cookie;
 
         # php-fpm configuration for non-cached content
         location @phpfpm_nocache {
@@ -202,9 +202,9 @@ server {
             fastcgi_no_cache $no_cache;
             fastcgi_cache_key "$scheme$request_method$host$request_uri";
             fastcgi_cache_methods GET HEAD;
-            fastcgi_ignore_headers $ignore_headers;
+            fastcgi_ignore_headers Cache-Control Expires Set-Cookie;
             fastcgi_cache APPCACHE;
-            fastcgi_hide_header Set-Cookie;
+            fastcgi_hide_header $hide_header;
             fastcgi_cache_valid 200 {{ NGINX_CACHE_TTL|default('10m') }};
             fastcgi_cache_lock on;
             fastcgi_cache_use_stale updating error timeout invalid_header http_500;
