@@ -121,21 +121,7 @@ server {
 
     {% if NGINX_ENABLE_FASTCGI_CACHE|default('false') == 'true' %}
         set $no_cache 0;
-
-        # php-fpm configuration for non-cached content
-        location @phpfpm_nocache {
-          fastcgi_split_path_info ^(.+\.php)(/.+)$;
-          include fastcgi_params;
-          fastcgi_index index.php;
-          fastcgi_param HTTP_PROXY "";
-          fastcgi_param PATH_INFO $query_string;
-          fastcgi_param SCRIPT_FILENAME $document_root/index.php;
-          fastcgi_pass 127.0.0.1:9000;
-
-          # No FastCGI Cache
-          fastcgi_cache_bypass 1;
-          fastcgi_no_cache 1;
-        }
+        set $hide_header Set-Cookie;
     {% endif %}
 
     include /etc/nginx/imported/partials/server/*;
@@ -191,6 +177,7 @@ server {
         fastcgi_index index.php;
         fastcgi_param HTTP_PROXY "";
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
         fastcgi_pass 127.0.0.1:9000;
 
         {% if NGINX_ENABLE_FASTCGI_CACHE|default('false') == 'true' %}
@@ -202,7 +189,7 @@ server {
             fastcgi_cache_methods GET HEAD;
             fastcgi_ignore_headers Cache-Control Expires Set-Cookie;
             fastcgi_cache APPCACHE;
-            fastcgi_hide_header Set-Cookie;
+            fastcgi_hide_header $hide_header;
             fastcgi_cache_valid 200 {{ NGINX_CACHE_TTL|default('10m') }};
             fastcgi_cache_lock on;
             fastcgi_cache_use_stale updating error timeout invalid_header http_500;
