@@ -2,6 +2,16 @@
 
 A reliable, highly-configurable nginx + php-fpm web server, available for PHP 5.6 and 7.1.
 
+## Simple Example
+
+Run the following in the command line:
+
+```
+docker run -d -p 8080:80 -e NGINX_ENABLE_AUTH=false klsmith/nginx-phpfpm:7.1-fpm
+```
+
+Point your browser to [http://localhost:8080](http://localhost:8080). You should see [a simple "Hello world!" page](#hello-world) that notes the container hostname and any environment variables.
+
 ## Hello world!
 
 The single "Hello world!" `index.php` in this image is used to show a given container is working properly, and it's borrowed and heavily modified from [Docker Cloud's hello-world](https://github.com/docker/dockercloud-hello-world).
