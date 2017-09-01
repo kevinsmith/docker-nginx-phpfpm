@@ -12,6 +12,29 @@ docker run -d -p 8080:80 -e NGINX_ENABLE_AUTH=false klsmith/nginx-phpfpm:5.6-fpm
 
 Point your browser to [http://localhost:8080](http://localhost:8080). You should see [a simple "Hello world!" page](#hello-world) that notes the container hostname and any environment variables.
 
+## Usage
+
+### Simple Docker Compose
+
+This one is just a simple example to show how it works and is accessible at [https://localhost:4433](https://localhost:4433) (and you'll need to bypass the self-signed SSL cert warning).
+
+```
+version: '2'
+
+services:
+  web:
+    image: klsmith/nginx-phpfpm:7.1-fpm
+    environment:
+      - NGINX_ENABLE_SSL=true
+      - NGINX_ENABLE_AUTH=false
+      - NGINX_HTTPS_PORT=4433
+    ports:
+      - '4433:4433'
+    restart: always
+
+    volumes:
+      - '/persistent/storage/uploads:/var/files/uploads'
+```
 ## Hello world!
 
 The single "Hello world!" `index.php` in this image is used to show a given container is working properly, and it's borrowed and heavily modified from [Docker Cloud's hello-world](https://github.com/docker/dockercloud-hello-world).
