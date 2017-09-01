@@ -1,6 +1,6 @@
 # klsmith/nginx-phpfpm
 
-A reliable, highly-configurable nginx + php-fpm web server.
+A reliable, highly-configurable nginx + php-fpm web server, available for PHP 5.6 and 7.1.
 
 ## Hello world!
 
