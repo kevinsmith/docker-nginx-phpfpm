@@ -6,6 +6,19 @@ A reliable, highly-configurable nginx + php-fpm web server.
 
 The single "Hello world!" `index.php` in this image is used to show a given container is working properly, and it's borrowed and heavily modified from [Docker Cloud's hello-world](https://github.com/docker/dockercloud-hello-world).
 
+## Bug Reports
+
+If you think you've found a bug, please post a good quality bug report in [this project's GitHub Issues](https://github.com/kevinsmith/docker-nginx-phpfpm/issues). Quoting from [Coen Jacobs](https://coenjacobs.me/2013/12/06/effective-bug-reports-on-github/), this is how you can best help me understand and fix the issue:
+
+- The title **explains the issue** in just a couple words
+- The description **is detailed enough** and contains at least:
+  - **steps to reproduce** the issue
+  - what the expected result is and **what actually happens**
+  - the **version** of the software being used
+  - versions of **relevant external software** (e.g. hosting platform, orchestrator, etc.)
+- Explain **what you’ve already done** trying to fix this issue
+- The report is **written in proper English**
+
 ## License
 
 Copyright 2017 Kevin Smith
