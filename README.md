@@ -7,7 +7,7 @@ A reliable, highly-configurable nginx + php-fpm web server, available for PHP 5.
 Run the following in the command line:
 
 ```
-docker run -d -p 8080:80 -e NGINX_ENABLE_AUTH=false klsmith/nginx-phpfpm:7.1-fpm
+docker run -d -p 8080:80 -e NGINX_ENABLE_AUTH=false klsmith/nginx-phpfpm:5.6-fpm
 ```
 
 Point your browser to [http://localhost:8080](http://localhost:8080). You should see [a simple "Hello world!" page](#hello-world) that notes the container hostname and any environment variables.
