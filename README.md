@@ -1,10 +1,56 @@
-# nginx-phpfpm
+# klsmith/nginx-phpfpm
 
-A reliable, highly-configurable nginx + php-fpm web server.
+A reliable, highly-configurable nginx + php-fpm web server, available for PHP 5.6 and 7.1.
 
+## Simple Example
+
+Run the following in the command line:
+
+```
+docker run -d -p 8080:80 -e NGINX_ENABLE_AUTH=false klsmith/nginx-phpfpm:5.6-fpm
+```
+
+Point your browser to [http://localhost:8080](http://localhost:8080). You should see [a simple "Hello world!" page](#hello-world) that notes the container hostname and any environment variables.
+
+## Usage
+
+### Simple Docker Compose
+
+This one is just a simple example to show how it works and is accessible at [https://localhost:4433](https://localhost:4433) (and you'll need to bypass the self-signed SSL cert warning).
+
+```
+version: '2'
+
+services:
+  web:
+    image: klsmith/nginx-phpfpm:7.1-fpm
+    environment:
+      - NGINX_ENABLE_SSL=true
+      - NGINX_ENABLE_AUTH=false
+      - NGINX_HTTPS_PORT=4433
+    ports:
+      - '4433:4433'
+    restart: always
+
+    volumes:
+      - '/persistent/storage/uploads:/var/files/uploads'
+```
 ## Hello world!
 
 The single "Hello world!" `index.php` in this image is used to show a given container is working properly, and it's borrowed and heavily modified from [Docker Cloud's hello-world](https://github.com/docker/dockercloud-hello-world).
+
+## Bug Reports
+
+If you think you've found a bug, please post a good quality bug report in [this project's GitHub Issues](https://github.com/kevinsmith/docker-nginx-phpfpm/issues). Quoting from [Coen Jacobs](https://coenjacobs.me/2013/12/06/effective-bug-reports-on-github/), this is how you can best help me understand and fix the issue:
+
+- The title **explains the issue** in just a couple words
+- The description **is detailed enough** and contains at least:
+  - **steps to reproduce** the issue
+  - what the expected result is and **what actually happens**
+  - the **version** of the software being used
+  - versions of **relevant external software** (e.g. hosting platform, orchestrator, etc.)
+- Explain **what you’ve already done** trying to fix this issue
+- The report is **written in proper English**
 
 ## License
 
