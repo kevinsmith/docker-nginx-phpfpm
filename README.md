@@ -1,4 +1,4 @@
-# nginx-phpfpm
+# klsmith/nginx-phpfpm
 
 A reliable, highly-configurable nginx + php-fpm web server.
 
