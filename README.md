@@ -14,7 +14,7 @@ Point your browser to [http://localhost:8080](http://localhost:8080). You should
 
 ## Usage
 
-### Simple Docker Compose
+### Docker Compose
 
 This one is just a simple example to show how it works and is accessible at [https://localhost:4433](https://localhost:4433) (and you'll need to bypass the self-signed SSL cert warning).
 
@@ -35,6 +35,31 @@ services:
     volumes:
       - '/persistent/storage/uploads:/var/files/uploads'
 ```
+
+### Environment Variables
+
+| Environment Variable | Default | Description |
+|----------------------|-----------|-------------|
+| NGINX_TRAILING_SLASH |  | Enforce trailing slash conformity for URLs ending without a file extension. e.g. _http://example.com/no/trailing/slash_ Possible values: `ensure`, `remove` |
+| NGINX_ABSOLUTE_REDIRECT | `on` | If disabled, redirects issued by nginx will be relative. Maps directly to [absolute_redirect nginx directive](http://nginx.org/en/docs/http/ngx_http_core_module.html#absolute_redirect). |
+| NGINX_PORT_IN_REDIRECT | `on` | When enabled, HTTP(S) ports are included in absolute redirects issued by nginx. Maps directly to [absolute_redirect nginx directive](http://nginx.org/en/docs/http/ngx_http_core_module.html#port_in_redirect). |
+| NGINX_ENABLE_ACCESS_LOG | `false` | Enable nginx access log. Set access log location with `NGINX_ACCESS_LOG_LOCATION`. |
+| NGINX_ACCESS_LOG_LOCATION | `/var/log/nginx/access.log` | Set nginx's [access_log path](http://nginx.org/en/docs/http/ngx_http_log_module.html#access_log). |
+| NGINX_ENABLE_AUTH | `true` | Enable basic access authentication for URLs served up by nginx. This setting is enabled by default to keep sites from being unknowingly made public. |
+| NGINX_AUTH_WHITELIST |  | Comma-delimited list of IP addresses to whitelist for basic access authentication. |
+| NGINX_ENABLE_FASTCGI_CACHE | `false` | Enable FastCGI caching. |
+| NGINX_CACHE_TTL | `10m` | FastCGI cache time-to-live. The length of time a cached page will continue to be served up before going stale. Maps directly to the inactive _inactive_ parameter of nginx's [fastcgi_cache_path directive](http://nginx.org/en/docs/http/ngx_http_fastcgi_module.html#fastcgi_cache_path). |
+| NGINX_ENABLE_SSL | `false` | Serve up URLs via secure protocol (HTTPS). |
+| NGINX_HTTP_PORT | `80` | Set the port used when connecting over HTTP. |
+| NGINX_HTTPS_PORT | `443` | Set the port used when connecting over HTTPS. |
+| NGINX_LOCATION | `/` | Set the main nginx location block's uri. Especially useful when running a separate Docker container for a site's subfolder, e.g. `/blog/`. |
+| NGINX_NOINDEX | `false` | Send noindex, nofollow, nosnippet, and noarchive directives in **X-Robots-Tag** HTTP header. [More info.](https://developers.google.com/search/reference/robots_meta_tag) |
+| NGINX_NON_CANONICAL |  | A comma-delimited list of hostnames that should be 301 redirected to the canonical hostname. e.g. `www.example.com` if your site is meant to be accessed as http://example.com. Commonly phrased as "redirect www to non-www" or vice-versa. This will redirect the full URL path. (Requires `NGINX_SERVER_NAME` be explicitly set.) |
+| NGINX_CANONICAL_SCHEME | `http` (`https` if NGINX_ENABLE_SSL is enabled) | URL scheme to use for destination URLs that are the result of `NGINX_NON_CANONICAL`. (Requires `NGINX_SERVER_NAME` be explicitly set.) |
+| NGINX_SERVER_NAME | `_` | Explicitly declare [nginx server name](http://nginx.org/en/docs/http/server_names.html). Must be set for `NGINX_NON_CANONICAL` and `NGINX_CANONICAL_SCHEME` to have any effect. Practically-speaking, that's the only reason this would need to be set anyway since it's the destination hostname for 301 redirect triggered by `NGINX_NON_CANONICAL`. |
+| NGINX_SSL_CERT | `/etc/nginx/ssl/self-signed.crt` | Self-signed SSL cert for localhost. FOR USE IN DEVELOPMENT ENVIRONMENTS ONLY. |
+| NGINX_SSL_CERT_KEY | `/etc/nginx/ssl/self-signed.key` | Self-signed SSL key for localhost. FOR USE IN DEVELOPMENT ENVIRONMENTS ONLY. |
+
 ## Hello world!
 
 The single "Hello world!" `index.php` in this image is used to show a given container is working properly, and it's borrowed and heavily modified from [Docker Cloud's hello-world](https://github.com/docker/dockercloud-hello-world).
